@@ -12,5 +12,8 @@ class LoginpageErrorState extends LoginpageState {
   final String msg;
 }
 
-
 class LoginpageNoErrorState extends LoginpageState {}
+
+class LoginpageSaveDataState extends LoginpageState {}
+
+class LoginpageDontSaveDataState extends LoginpageState {}

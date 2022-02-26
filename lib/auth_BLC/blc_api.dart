@@ -29,6 +29,7 @@ class BLCApi {
   late Dio _client;
   late Box diuSpeederDB;
   late Box userDatabox;
+  late bool isSave;
   UserData _userData = UserData(
     firstname: '',
     lastname: '',
@@ -87,7 +88,12 @@ class BLCApi {
     }
   }
 
-  Future<bool> login(String user, String pass) async {
+  Future<bool> login({
+    required String user,
+    required String pass,
+    required bool isSave,
+  }) async {
+    this.isSave = isSave;
     if (kDebugMode) {
       print(diuSpeederDB.get('AuthToken'));
     }
@@ -303,9 +309,11 @@ class BLCApi {
   }
 
   Future<void> saveThis() async {
-    if (_authToken.isAnyChange()) {
-      await hiveSaveThis();
-      _authToken.setAllCache();
+    if (isSave) {
+      if (_authToken.isAnyChange()) {
+        await hiveSaveThis();
+        _authToken.setAllCache();
+      }
     }
   }
 

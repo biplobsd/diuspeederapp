@@ -26,9 +26,13 @@ class AuthblcCubit extends Cubit<AuthblcState> {
     }
   }
 
-  Future<void> login(String user, String pass) async {
+  Future<void> login({
+    required String user,
+    required String pass,
+    required bool isSave,
+  }) async {
     emit(AuthblcLoadingState());
-    if (await _blClogin.login(user, pass)) {
+    if (await _blClogin.login(user: user, pass: pass, isSave: isSave)) {
       userData = await _blClogin.getUser();
       if (kDebugMode) {
         print('Success!');

@@ -15,4 +15,12 @@ class LoginpageCubit extends Cubit<LoginpageState> {
       emit(LoginpageNoErrorState());
     }
   }
+
+  void saveData({required bool? isCheck}) {
+    if (isCheck!) {
+      emit(LoginpageSaveDataState());
+    } else {
+      emit(LoginpageDontSaveDataState());
+    }
+  }
 }

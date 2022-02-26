@@ -33,6 +33,7 @@ class LoginPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late bool isCheck;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -45,9 +46,12 @@ class LoginPageScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios,
-                    color: Colors.black45,
+                    color: Theme.of(context)
+                        .primaryIconTheme
+                        .color!
+                        .withOpacity(0.5),
                   ),
                 ),
               ),
@@ -81,7 +85,7 @@ class LoginPageScreen extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
-                                .copyWith(fontSize: 20, color: Colors.black87),
+                                .copyWith(fontSize: 20),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -148,6 +152,7 @@ class LoginPageScreen extends StatelessWidget {
                       height: 10,
                     ),
                     TextField(
+                      style: Theme.of(context).textTheme.caption,
                       controller: _password,
                       onChanged: (_) => BlocProvider.of<LoginpageCubit>(context)
                           .errorMsg(_username.text, _password.text),
@@ -162,6 +167,34 @@ class LoginPageScreen extends StatelessWidget {
                         labelStyle: const TextStyle(height: 3.5),
                         label: const Text('Password'),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        BlocBuilder<LoginpageCubit, LoginpageState>(
+                          builder: (context, state) {
+                            if (state is LoginpageSaveDataState) {
+                              isCheck = true;
+                            } else {
+                              isCheck = false;
+                            }
+                            return Checkbox(
+                              value: isCheck,
+                              onChanged: (s) =>
+                                  BlocProvider.of<LoginpageCubit>(context)
+                                      .saveData(
+                                isCheck: s,
+                              ),
+                            );
+                          },
+                        ),
+                        Text(
+                          'Remember username on this device',
+                          style: Theme.of(context).textTheme.caption,
+                        )
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -200,8 +233,11 @@ class LoginPageScreen extends StatelessWidget {
                           ),
                           onPressed: () {
                             FocusScope.of(context).unfocus();
-                            BlocProvider.of<AuthblcCubit>(context)
-                                .login(_username.text, _password.text);
+                            BlocProvider.of<AuthblcCubit>(context).login(
+                              user: _username.text,
+                              pass: _password.text,
+                              isSave: isCheck,
+                            );
                           },
                           child: const Text(
                             'LOGIN',
