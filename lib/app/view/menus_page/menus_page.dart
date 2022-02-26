@@ -6,6 +6,7 @@ import 'package:diuspeeder/app/view/menus_page/model/menus.dart';
 import 'package:diuspeeder/auth_BLC/cubit/authblc_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MenuesPage extends StatelessWidget {
   const MenuesPage({Key? key}) : super(key: key);
@@ -106,17 +107,43 @@ class MenuesPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const SizedBox(
+      bottomNavigationBar: SizedBox(
         height: 40,
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
           ),
           child: GlassMorphism(
             blur: 30,
             opacity: 0.01,
-            child: WhoCreated(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const WhoCreated(),
+                InkWell(
+                  onTap: () async {
+                    const sourceCodeUrl =
+                        'https://github.com/biplobsd/DIUSpeederApp';
+                    if (!await launch(
+                      sourceCodeUrl,
+                    )) throw Exception('Could not launch $sourceCodeUrl');
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(10),
+                        child: Image.asset('assets/githubLogo.png'),
+                      ),
+                      Text(
+                        'View source code',
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
