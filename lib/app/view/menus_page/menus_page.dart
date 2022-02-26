@@ -46,7 +46,6 @@ class MenuesPage extends StatelessWidget {
                           is AuthblcLoginState) {
                         Navigator.of(context).pushNamed(menus[index].pageOpen);
                       } else {
-                        
                         Navigator.of(context).pushNamed(
                           LoginPage.pathName,
                           arguments: menus[index].pageOpen,
