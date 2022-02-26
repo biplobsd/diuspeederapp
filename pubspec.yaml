@@ -74,7 +74,7 @@ flutter_icons:
   macos: true
   windows: true
   web: true
-  image_path: "assets/icon.png"
+  image_path: "assets/ic_launcher.png"
 
 flutter_app_name:
   name: "DIUSpeeder"
