@@ -49,6 +49,9 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
                                   borderRadius: BorderRadius.circular(30),
                                   child: Image.network(
                                     userPicUrl,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Text('Unable to load image'),
                                   ),
                                 ),
                               ),

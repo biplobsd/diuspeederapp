@@ -19,8 +19,8 @@ class AuthblcCubit extends Cubit<AuthblcState> {
     await _blClogin.hiveInitial();
     final userData = _blClogin.userData;
     if (!userData.userid.isNegative) {
-      emit(AuthblcLoginState());
       this.userData = userData;
+      emit(AuthblcLoginState());
     } else {
       emit(AuthblcLogoutState());
     }
