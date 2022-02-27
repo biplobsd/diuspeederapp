@@ -309,7 +309,7 @@ class BLCApi {
   }
 
   Future<void> saveThis() async {
-    if (_authToken.isSave) {
+    if (_authToken.isSave) { 
       if (_authToken.isAnyChange()) {
         await hiveSaveThis();
         _authToken.setAllCache();

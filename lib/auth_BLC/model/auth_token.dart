@@ -62,13 +62,13 @@ class AuthToken {
   }
 
   void setAllCache() {
-    token = cToken;
-    privateToken = cPrivateToken;
-    logintoken = cLogintoken;
-    user = cUser;
-    pass = cPass;
-    autoGenKey = cAutoGenKey;
-    isSave = cIsSave;
+    cToken = token;
+    cPrivateToken = privateToken;
+    cLogintoken = logintoken;
+    cUser = user;
+    cPass = pass;
+    cAutoGenKey = autoGenKey;
+    cIsSave = isSave;
   }
 
   @override

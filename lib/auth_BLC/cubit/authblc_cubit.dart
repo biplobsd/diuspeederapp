@@ -56,7 +56,7 @@ class AuthblcCubit extends Cubit<AuthblcState> {
   Future<bool> vplPosting(String pid, String filename, String data) async {
     var checkMethodInt = 0;
     var isLogin = true;
-
+    
     while (!await _blClogin.isWebLoginSuccess()) {
       if (checkMethodInt >= 2) {
         isLogin = false;
