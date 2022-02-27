@@ -48,4 +48,14 @@ class UserData {
   String toString() {
     return toList().toString();
   }
+
+  void clear() {
+    firstname = '';
+    lastname = '';
+    userid = -1;
+    fullname = '';
+    username = '';
+    userpictureurl = '';
+    userprivateaccesskey = '';
+  }
 }

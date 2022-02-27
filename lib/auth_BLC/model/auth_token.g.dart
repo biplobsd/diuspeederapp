@@ -23,13 +23,14 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
       user: fields[3] as String,
       pass: fields[4] as String,
       autoGenKey: fields[5] as String,
+      isSave: fields[6] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, AuthToken obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.token)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
       ..writeByte(4)
       ..write(obj.pass)
       ..writeByte(5)
-      ..write(obj.autoGenKey);
+      ..write(obj.autoGenKey)
+      ..writeByte(6)
+      ..write(obj.isSave);
   }
 
   @override

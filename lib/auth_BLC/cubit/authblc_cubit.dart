@@ -32,7 +32,9 @@ class AuthblcCubit extends Cubit<AuthblcState> {
     required bool isSave,
   }) async {
     emit(AuthblcLoadingState());
-    if (await _blClogin.login(user: user, pass: pass, isSave: isSave)) {
+    _blClogin.setUserpass(user, pass, isSave);
+
+    if (await _blClogin.login()) {
       userData = await _blClogin.getUser();
       if (kDebugMode) {
         print('Success!');

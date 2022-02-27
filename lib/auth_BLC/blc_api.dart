@@ -29,7 +29,6 @@ class BLCApi {
   late Dio _client;
   late Box diuSpeederDB;
   late Box userDatabox;
-  late bool isSave;
   UserData _userData = UserData(
     firstname: '',
     lastname: '',
@@ -47,6 +46,7 @@ class BLCApi {
     user: '',
     pass: '',
     autoGenKey: '',
+    isSave: false,
   );
 
   late PersistCookieJar cookieJar;
@@ -54,6 +54,12 @@ class BLCApi {
 
   UserData get userData {
     return _userData;
+  }
+
+  void setUserpass(String user, String pass, bool isSave) {
+    _authToken.user = user;
+    _authToken.pass = pass;
+    _authToken.isSave = isSave;
   }
 
   Future<void> presistCookie() async {
@@ -88,24 +94,17 @@ class BLCApi {
     }
   }
 
-  Future<bool> login({
-    required String user,
-    required String pass,
-    required bool isSave,
-  }) async {
-    this.isSave = isSave;
+  Future<bool> login() async {
     if (kDebugMode) {
       print(diuSpeederDB.get('AuthToken'));
     }
-    _authToken.user = user;
-    _authToken.pass = pass;
 
     try {
       final responsed = await _client.post<dynamic>(
         BlcPath.apiLogin,
         queryParameters: <String, String>{
-          'username': user,
-          'password': pass,
+          'username': _authToken.user,
+          'password': _authToken.pass,
           'service': 'moodle_mobile_app',
         },
         options: Options(
@@ -305,11 +304,12 @@ class BLCApi {
       }
       return true;
     }
+
     return false;
   }
 
   Future<void> saveThis() async {
-    if (isSave) {
+    if (_authToken.isSave) {
       if (_authToken.isAnyChange()) {
         await hiveSaveThis();
         _authToken.setAllCache();
@@ -332,15 +332,9 @@ class BLCApi {
   Future<void> logout() async {
     await cookieJar.deleteAll();
     await diuSpeederDB.clear();
-    _userData = UserData(
-      firstname: '',
-      lastname: '',
-      userid: 0,
-      fullname: '',
-      username: '',
-      userpictureurl: '',
-      userprivateaccesskey: '',
-    );
+
+    _authToken.clear();
+    _userData.clear();
     _client.clear();
   }
 }

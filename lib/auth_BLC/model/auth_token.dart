@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 
 part 'auth_token.g.dart';
@@ -12,6 +11,7 @@ class AuthToken {
     required this.user,
     required this.pass,
     required this.autoGenKey,
+    required this.isSave,
   });
 
   @HiveField(0)
@@ -38,6 +38,10 @@ class AuthToken {
   String autoGenKey;
   String cAutoGenKey = '';
 
+  @HiveField(6)
+  bool isSave;
+  bool cIsSave = false;
+
   bool isAnyChange() {
     if (token != cToken) {
       return true;
@@ -51,6 +55,8 @@ class AuthToken {
       return true;
     } else if (autoGenKey != cAutoGenKey) {
       return true;
+    } else if (isSave != cIsSave) {
+      return true;
     }
     return false;
   }
@@ -62,20 +68,33 @@ class AuthToken {
     user = cUser;
     pass = cPass;
     autoGenKey = cAutoGenKey;
+    isSave = cIsSave;
   }
 
   @override
   String toString() {
-    return 'Token $token PrivateToken $privateToken logintoken $logintoken '
-        'user $user pass $pass $autoGenKey';
+    return toList().toString();
   }
 
-  Map<String, String> toList() => {
+  Map<String, dynamic> toList() => <String, dynamic>{
         'token': token,
         'privateToken': privateToken,
         'logintoken': logintoken.toString(),
         'user': user,
         'pass': pass,
         'autoGenKey': autoGenKey,
+        'isSave': isSave,
       };
+
+  void clear(){
+    token = '';
+    privateToken = '';
+    logintoken = '';
+    user = '';
+    pass = '';
+    autoGenKey = '';
+    isSave = false;
+    setAllCache();
+  }
+  
 }
