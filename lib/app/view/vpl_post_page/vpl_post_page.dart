@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:diuspeeder/app/appbar_custom.dart';
 import 'package:diuspeeder/app/view/vpl_post_page/cubit/vplp_cubit.dart';
-import 'package:diuspeeder/auth_BLC/cubit/authblc_cubit.dart';
+import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

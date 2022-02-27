@@ -1,6 +1,6 @@
 import 'package:diuspeeder/app/view/glass_morphism.dart';
 import 'package:diuspeeder/app/view/menus_page/menus_page.dart';
-import 'package:diuspeeder/auth_BLC/cubit/authblc_cubit.dart';
+import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';

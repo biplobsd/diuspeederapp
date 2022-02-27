@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:diuspeeder/auth_BLC/blc_api.dart';
-import 'package:diuspeeder/auth_BLC/model/user_data.dart';
+import 'package:diuspeeder/core/auth_BLC/blc_api.dart';
+import 'package:diuspeeder/core/auth_BLC/model/user_data.dart';
 import 'package:flutter/foundation.dart';
 
 part 'authblc_state.dart';

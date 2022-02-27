@@ -6,7 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:diuspeeder/app/view/menus_page/menus_page.dart';
-import 'package:diuspeeder/auth_BLC/cubit/authblc_cubit.dart';
+import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';
 import 'package:diuspeeder/core/themes/app_theme.dart';
 import 'package:diuspeeder/routes/routes.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'package:diuspeeder/app/view/bottom_credit.dart';
 import 'package:diuspeeder/app/view/login_page/cubit/loginpage_cubit.dart';
-import 'package:diuspeeder/auth_BLC/cubit/authblc_cubit.dart';
+import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
