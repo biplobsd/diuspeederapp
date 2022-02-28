@@ -1,6 +1,6 @@
 import 'package:diuspeeder/app/appbar_custom.dart';
-import 'package:diuspeeder/app/view/bottom_credit.dart';
-import 'package:diuspeeder/app/view/glass_morphism.dart';
+import 'package:diuspeeder/app/widgets/bottom_credit.dart';
+import 'package:diuspeeder/app/widgets/glass_morphism.dart';
 import 'package:diuspeeder/app/view/login_page/login_page.dart';
 import 'package:diuspeeder/app/view/menus_page/model/menus.dart';
 import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';

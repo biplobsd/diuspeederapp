@@ -1,4 +1,4 @@
-import 'package:diuspeeder/app/view/glass_morphism.dart';
+import 'package:diuspeeder/app/widgets/glass_morphism.dart';
 import 'package:diuspeeder/app/view/menus_page/menus_page.dart';
 import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';
 import 'package:flutter/material.dart';

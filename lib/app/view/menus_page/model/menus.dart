@@ -1,3 +1,4 @@
+import 'package:diuspeeder/app/view/mark_as_done_page/mark_as_done_page.dart';
 import 'package:diuspeeder/app/view/menus_page/model/menu.dart';
 import 'package:diuspeeder/app/view/vpl_post_page/vpl_post_page.dart';
 import 'package:flutter/Material.dart';
@@ -27,12 +28,12 @@ const List<Menu> menus = [
         Color.fromARGB(200, 167, 255, 131)
       ],
     ),
-    pageOpen: VPLPostPage.pathName,
+    pageOpen: MarkAsDonePage.pathName,
     isLoginRequired: true,
     icon: Icons.done_all,
     title: 'Mark as done',
     titleIconColor: Colors.white,
-    isComingSoon: true,
+    isComingSoon: false,
   ),
   Menu(
     image: AssetImage('assets/courseEnrol.png'),
