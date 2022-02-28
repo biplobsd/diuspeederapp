@@ -107,12 +107,19 @@ class MenuesPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: SizedBox(
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.7, color: Colors.white10),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+          ),
+        ),
         height: 40,
         child: ClipRRect(
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
           ),
           child: GlassMorphism(
             blur: 30,
