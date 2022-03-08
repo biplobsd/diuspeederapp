@@ -109,6 +109,7 @@ flutter:
     - assets/lotties/31490-no-connection.json
     - assets/lotties/90464-loading.json
     - assets/lotties/loginAccount.json
+    - assets/lotties/loadingGet.json
     - assets/presentation.png
     - assets/markAsDone.png
     - assets/vpl.png

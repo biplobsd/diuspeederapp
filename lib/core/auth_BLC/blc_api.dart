@@ -283,17 +283,17 @@ class BLCApi {
     return false;
   }
 
-  Future<List<CourseData>> getEnrolUsersCourses() async {
-    var enrolledCourse = <CourseData>[];
+  Future<List<CourseData>> getrecentCourses() async {
+    var recentCourse = <CourseData>[];
     final responsed = await _client.post<List<dynamic>>(BlcPath.webserver,
         queryParameters: <String, String>{
           'wstoken': _authToken.wstoken,
-          'wsfunction': 'core_enrol_get_users_courses',
+          'wsfunction': 'core_course_get_recent_courses',
           'userid': _userData.userid.toString(),
           'moodlewsrestformat': 'json',
         });
     for (final element in responsed.data!) {
-      enrolledCourse.add(
+      recentCourse.add(
         CourseData(
           id: element['id'] as int,
           fullname: element['fullname'] as String,
@@ -302,7 +302,7 @@ class BLCApi {
         ),
       );
     }
-    return enrolledCourse;
+    return recentCourse;
   }
 
   String getSesskey(String pageData) {
@@ -353,7 +353,11 @@ class BLCApi {
         )
         .nodes
         .forEach((element) {
-      final data = <String, dynamic>{'isMarkDone': false, 'cmid': -1};
+      final data = <String, dynamic>{
+        'isMarkDone': false,
+        'cmid': -1,
+        'isSending': false
+      };
       if ('manual:undo' == element.attributes['data-toggletype']) {
         data['isMarkDone'] = true;
       }

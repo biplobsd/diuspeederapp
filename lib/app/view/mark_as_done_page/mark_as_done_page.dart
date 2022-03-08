@@ -6,6 +6,7 @@ import 'package:diuspeeder/core/auth_BLC/model/course_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:lottie/lottie.dart';
 
 class MarkAsDonePage extends StatelessWidget {
   const MarkAsDonePage({Key? key}) : super(key: key);
@@ -17,52 +18,13 @@ class MarkAsDonePage extends StatelessWidget {
       create: (context) => MarkasdoneCubit(
         authblcCubit: BlocProvider.of<AuthblcCubit>(context),
       ),
-      child: const MarkAsDoneScreen(),
+      child: MarkAsDoneScreen(),
     );
   }
 }
 
-class MarkAsDoneScreen extends StatefulWidget {
-  const MarkAsDoneScreen({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<MarkAsDoneScreen> createState() => _MarkAsDoneScreenState();
-}
-
-class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
-  Future<void> dialogHelpInfo({
-    required BuildContext context,
-    required String title,
-    required String helpImgPath,
-  }) async {
-    await showDialog<dynamic>(
-      context: context,
-      builder: (cnt) => AlertDialog(
-        title: Text(title),
-        content: InteractiveViewer(
-          panEnabled: false,
-          minScale: 0.5,
-          maxScale: 1,
-          child: Image.asset(
-            helpImgPath,
-            width: 350,
-            height: 350,
-            fit: BoxFit.cover,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(cnt).pop();
-            },
-            child: const Text('Okay'),
-          )
-        ],
-      ),
-    );
-  }
+class MarkAsDoneScreen extends StatelessWidget {
+  MarkAsDoneScreen({Key? key}) : super(key: key);
 
   late String? value = null;
   Map<String, dynamic>? data;
@@ -74,46 +36,64 @@ class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
-                builder: (context, state) {
-                  if (state is MarkasdoneGettingDataState) {
-                    return const Text('Getting enrolled course data');
+              BlocConsumer<MarkasdoneCubit, MarkasdoneState>(
+                listener: (context, state) {
+                  if (state is MarkasdoneIdealState) {
+                    var courseId = BlocProvider.of<MarkasdoneCubit>(context)
+                        .course[0]
+                        .id
+                        .toString();
+                    value = courseId;
+                    BlocProvider.of<MarkasdoneCubit>(context)
+                        .gettingDoneButtons(courseId);
                   }
+                },
+                builder: (context, state) {
                   return DropdownButton(
                     icon: IconButton(
-                      icon: const Icon(Icons.cached_sharp),
+                      icon: Lottie.asset(
+                        'assets/lotties/loadingGet.json',
+                        animate:
+                            state is MarkasdoneGettingDataState ? true : false,
+                      ),
                       onPressed: () {
                         BlocProvider.of<MarkasdoneCubit>(context)
                             .refresh(value);
                       },
                     ),
-                    hint: const Text('Select Course'),
+                    hint: Text(
+                      state is MarkasdoneGettingDataState
+                          ? 'Fetching enroll courses...'
+                          : 'Select Course',
+                    ),
                     isExpanded: true,
                     value: value,
-                    items: BlocProvider.of<MarkasdoneCubit>(context)
-                        .course
-                        .map<DropdownMenuItem<String>>((CourseData value) {
-                      return DropdownMenuItem<String>(
-                        value: value.id.toString(),
-                        child: Text(
-                          value.fullname,
-                          maxLines: 1,
-                          style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                    items: state is MarkasdoneGettingDataState
+                        ? null
+                        : BlocProvider.of<MarkasdoneCubit>(context)
+                            .course
+                            .map<DropdownMenuItem<String>>((CourseData value) {
+                            return DropdownMenuItem<String>(
+                              value: value.id.toString(),
+                              child: Text(
+                                value.fullname,
+                                maxLines: 1,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption!
+                                    .copyWith(overflow: TextOverflow.ellipsis),
+                              ),
+                            );
+                          }).toList(),
                     onChanged: (v) {
                       value = v.toString();
-                      setState(() {
-                        BlocProvider.of<MarkasdoneCubit>(context)
-                            .gettingDoneButtons(value.toString());
-                      });
+
+                      BlocProvider.of<MarkasdoneCubit>(context)
+                          .gettingDoneButtons(value.toString());
                     },
                   );
                 },
@@ -147,7 +127,9 @@ class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
                         ),
                       );
                     }
-                    return Container();
+                    return Container(
+                      height: 20,
+                    );
                   },
                 ),
               ),
@@ -157,7 +139,7 @@ class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                height: MediaQuery.of(context).size.height * .55,
+                height: MediaQuery.of(context).size.height * .61,
                 decoration: BoxDecoration(
                   color: Theme.of(context).hoverColor,
                   borderRadius: BorderRadius.circular(15),
@@ -168,7 +150,7 @@ class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
                       data =
                           BlocProvider.of<MarkasdoneCubit>(context).markButtons;
                       if (state is MarkasdoneGettingButtonsState) {
-                        return const Text('Getting cmid buttons.');
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       return Column(
@@ -180,25 +162,24 @@ class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
                                 style: ButtonStyle(
                                   foregroundColor: MaterialStateProperty.all(
                                     (e['isMarkDone'] as bool)
-                                        ? Colors.greenAccent
-                                        : Colors.redAccent,
+                                        ? Colors.lightBlue
+                                        : Colors.red,
                                   ),
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    BlocProvider.of<MarkasdoneCubit>(context)
-                                        .markAsDone(
-                                      data!['sesskey'].toString(),
-                                      e['cmid'].toString(),
-                                      value!,
-                                      !(e['isMarkDone'] as bool),
-                                    );
-                                    data;
-                                  });
+                                  BlocProvider.of<MarkasdoneCubit>(context)
+                                      .markAsDone(
+                                    data!['sesskey'].toString(),
+                                    e['cmid'].toString(),
+                                    value!,
+                                    !(e['isMarkDone'] as bool),
+                                  );
                                 },
-                                icon: (e['isMarkDone'] as bool)
-                                    ? const Icon(Icons.check_circle)
-                                    : const Icon(Icons.cancel),
+                                icon: (e['isSending'] as bool)
+                                    ? const Icon(Icons.cached_sharp)
+                                    : (e['isMarkDone'] as bool)
+                                        ? const Icon(Icons.check_circle)
+                                        : const Icon(Icons.cancel),
                                 label: Text(
                                   '${e["cmid"]} | ${e["title"]}',
                                   maxLines: 1,

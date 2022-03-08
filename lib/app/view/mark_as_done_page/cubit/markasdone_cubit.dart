@@ -8,7 +8,7 @@ part 'markasdone_state.dart';
 
 class MarkasdoneCubit extends Cubit<MarkasdoneState> {
   MarkasdoneCubit({required this.authblcCubit})
-      : super(MarkasdoneIdealState()) {
+      : super(MarkasdoneInitalState()) {
     gettingData();
   }
 
@@ -20,7 +20,7 @@ class MarkasdoneCubit extends Cubit<MarkasdoneState> {
   Future<void> gettingData() async {
     emit(MarkasdoneGettingDataState());
     iswebAccess = await authblcCubit.blcApi.webAccess();
-    course = await authblcCubit.blcApi.getEnrolUsersCourses();
+    course = await authblcCubit.blcApi.getrecentCourses();
     emit(MarkasdoneIdealState());
   }
 
@@ -57,16 +57,20 @@ class MarkasdoneCubit extends Cubit<MarkasdoneState> {
     String pageId,
     bool current,
   ) async {
-    if (await authblcCubit.blcApi.markAsDone(sesskey, cmid, current)) {
-      for (var i = 0; i < (markButtons!['markButtons'] as List).length; i++) {
-        dynamic target = markButtons!['markButtons'][i];
-        if (target['cmid'] == cmid) {
-          target['isMarkDone'] = current;
-          break;
-        }
+    emit(MarkasdoneLoadingState());
+    var i = 0;
+    for (; i < (markButtons!['markButtons'] as List).length; i++) {
+      dynamic target = markButtons!['markButtons'][i];
+      if (target['cmid'] == cmid) {
+        target['isSending'] = true;
+        break;
       }
-      emit(MarkasdoneSelectedState());
     }
+    if (await authblcCubit.blcApi.markAsDone(sesskey, cmid, current)) {
+      markButtons!['markButtons'][i]['isMarkDone'] = current;
+      markButtons!['markButtons'][i]['isSending'] = false;
+    }
+    emit(MarkasdoneSelectedState());
   }
 
   Future<void> markAll() async {
