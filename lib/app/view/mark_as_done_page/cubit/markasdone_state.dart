@@ -7,4 +7,6 @@ class MarkasdoneGettingDataState extends MarkasdoneState {}
 class MarkasdoneGettingButtonsState extends MarkasdoneState {}
 class MarkasdoneLoadingState extends MarkasdoneState {}
 class MarkasdoneIdealState extends MarkasdoneState {}
+class MarkasdoneSelectedState extends MarkasdoneState {}
+
 

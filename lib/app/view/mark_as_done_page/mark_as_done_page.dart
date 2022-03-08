@@ -123,17 +123,32 @@ class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: GFProgressBar(
-                  lineHeight: 20,
-                  alignment: MainAxisAlignment.spaceBetween,
-                  percentage: 0.6,
-                  backgroundColor: Colors.black26,
-                  progressBarColor: GFColors.INFO,
-                  child: const Text(
-                    '80%',
-                    textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 13, color: Colors.white54),
-                  ),
+                child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
+                  builder: (context, state) {
+                    if (state is MarkasdoneSelectedState) {
+                      var perc = BlocProvider.of<MarkasdoneCubit>(context)
+                          .getProgressBarValue();
+                      if (perc.isNaN) {
+                        perc = 0;
+                      }
+                      return GFProgressBar(
+                        animateFromLastPercentage: true,
+                        animation: true,
+                        lineHeight: 20,
+                        alignment: MainAxisAlignment.spaceBetween,
+                        percentage: perc,
+                        backgroundColor: Colors.black26,
+                        progressBarColor: GFColors.INFO,
+                        child: Text(
+                          '${(perc * 100).toStringAsFixed(0)}%',
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.white54),
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
                 ),
               ),
               const SizedBox(

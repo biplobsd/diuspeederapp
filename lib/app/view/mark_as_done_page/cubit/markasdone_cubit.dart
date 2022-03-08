@@ -35,8 +35,20 @@ class MarkasdoneCubit extends Cubit<MarkasdoneState> {
     if (iswebAccess) {
       emit(MarkasdoneGettingButtonsState());
       markButtons = await authblcCubit.blcApi.markAsDoneGetButton(pageId);
-      emit(MarkasdoneIdealState());
+      emit(MarkasdoneSelectedState());
     }
+  }
+
+  double getProgressBarValue() {
+    final doneAlready = markButtons!['markButtons'].fold(0,
+        (dynamic previousValue, dynamic element) {
+      if (element['isMarkDone'] as bool) {
+        return previousValue + 1;
+      }
+      return previousValue;
+    }) as num;
+    final length = (markButtons!['markButtons'] as List).length;
+    return doneAlready / length;
   }
 
   Future<void> markAsDone(
@@ -53,7 +65,7 @@ class MarkasdoneCubit extends Cubit<MarkasdoneState> {
           break;
         }
       }
-      emit(MarkasdoneIdealState());
+      emit(MarkasdoneSelectedState());
     }
   }
 
@@ -81,7 +93,6 @@ class MarkasdoneCubit extends Cubit<MarkasdoneState> {
           false,
         )) {
           element['isMarkDone'] = false;
-          emit(MarkasdoneIdealState());
         }
       } else {
         if (!isDone) {
@@ -91,10 +102,10 @@ class MarkasdoneCubit extends Cubit<MarkasdoneState> {
             true,
           )) {
             element['isMarkDone'] = true;
-            emit(MarkasdoneIdealState());
           }
         }
       }
+      emit(MarkasdoneSelectedState());
     }
   }
 }
