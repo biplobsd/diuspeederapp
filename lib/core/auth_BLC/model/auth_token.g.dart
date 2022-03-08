@@ -17,7 +17,7 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AuthToken(
-      token: fields[0] as String,
+      wstoken: fields[0] as String,
       privateToken: fields[1] as String,
       logintoken: fields[2] as String?,
       user: fields[3] as String,
@@ -32,7 +32,7 @@ class AuthTokenAdapter extends TypeAdapter<AuthToken> {
     writer
       ..writeByte(7)
       ..writeByte(0)
-      ..write(obj.token)
+      ..write(obj.wstoken)
       ..writeByte(1)
       ..write(obj.privateToken)
       ..writeByte(2)

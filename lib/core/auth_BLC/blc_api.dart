@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:diuspeeder/core/auth_BLC/blc_url_path.dart';
 import 'package:diuspeeder/core/auth_BLC/model/auth_token.dart';
+import 'package:diuspeeder/core/auth_BLC/model/course_data.dart';
 import 'package:diuspeeder/core/auth_BLC/model/user_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -40,7 +41,7 @@ class BLCApi {
   );
 
   AuthToken _authToken = AuthToken(
-    token: '',
+    wstoken: '',
     privateToken: '',
     logintoken: '',
     user: '',
@@ -117,7 +118,7 @@ class BLCApi {
       final responseJson = responsed.data as Map<String, dynamic>;
       if (responseJson.containsKey('token') &&
           responseJson.containsKey('privatetoken')) {
-        _authToken.token = responseJson['token'] as String;
+        _authToken.wstoken = responseJson['token'] as String;
         _authToken.privateToken = responseJson['privatetoken'] as String;
 
         return true;
@@ -140,7 +141,7 @@ class BLCApi {
     final responsed = await _client.get<dynamic>(
       BlcPath.webserver,
       queryParameters: <String, dynamic>{
-        'wstoken': _authToken.token,
+        'wstoken': _authToken.wstoken,
         'wsfunction': 'core_webservice_get_site_info',
         'moodlewsrestformat': 'json',
       },
@@ -164,7 +165,7 @@ class BLCApi {
         data: <String, String>{
           'wsfunction': 'tool_mobile_get_autologin_key',
           'privatetoken': _authToken.privateToken,
-          'wstoken': _authToken.token,
+          'wstoken': _authToken.wstoken,
           'moodlewsrestformat': 'json',
         },
         options: Options(
@@ -204,6 +205,31 @@ class BLCApi {
         validateStatus: (i) => i! < 500,
       ),
     );
+  }
+
+  Future<bool> webAccess() async {
+    var checkMethodInt = 0;
+    while (!await isWebLoginSuccess()) {
+      if (checkMethodInt >= 2) {
+        return false;
+      }
+      switch (checkMethodInt) {
+        case 0:
+          await apiAutoLogin();
+          checkMethodInt++;
+          break;
+        case 1:
+          await webLogin();
+          checkMethodInt++;
+          break;
+        default:
+          if (kDebugMode) {
+            print('Login failed');
+          }
+      }
+    }
+
+    return true;
   }
 
   Future<void> webLogin() async {
@@ -255,6 +281,94 @@ class BLCApi {
       }
     }
     return false;
+  }
+
+  Future<List<CourseData>> getEnrolUsersCourses() async {
+    var enrolledCourse = <CourseData>[];
+    final responsed = await _client.post<List<dynamic>>(BlcPath.webserver,
+        queryParameters: <String, String>{
+          'wstoken': _authToken.wstoken,
+          'wsfunction': 'core_enrol_get_users_courses',
+          'userid': _userData.userid.toString(),
+          'moodlewsrestformat': 'json',
+        });
+    for (final element in responsed.data!) {
+      enrolledCourse.add(
+        CourseData(
+          id: element['id'] as int,
+          fullname: element['fullname'] as String,
+          idnumber: element['idnumber'] as String,
+          startdate: element['startdate'] as int,
+        ),
+      );
+    }
+    return enrolledCourse;
+  }
+
+  String getSesskey(String pageData) {
+    final reg = RegExp(r'sesskey\"\:\"([^\"]+)');
+    final found = reg.firstMatch(pageData)!.group(1).toString();
+    return found;
+  }
+
+  Future<bool> markAsDone(String sesskey, String cmid, bool current) async {
+    final responsed = await _client.post<dynamic>(
+      BlcPath.webServerAjax,
+      queryParameters: <String, String>{'sesskey': sesskey},
+      data: [
+        {
+          'methodname':
+              'core_completion_update_activity_completion_status_manually',
+          'args': {'cmid': int.parse(cmid), 'completed': current}
+        }
+      ],
+    );
+
+    if (!(responsed.data[0]['error'] as bool)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<Map<String, dynamic>> markAsDoneGetButton(String pageId) async {
+    final responsed = await _client.get<String>(
+      BlcPath.coursePage,
+      queryParameters: <String, String>{'id': pageId},
+    );
+    final sesskey = getSesskey(responsed.data.toString());
+
+    // if (kDebugMode) {
+    //   print('sskey $sesskey');
+    // }
+    // if (kDebugMode) {
+    //   print(responsed.data.toString());
+    // }
+
+    final buttonStates = <Map<String, dynamic>>[];
+
+    XPath.html(responsed.data.toString())
+        .query(
+          "//button[@data-action='toggle-manual-completion']",
+        )
+        .nodes
+        .forEach((element) {
+      final data = <String, dynamic>{'isMarkDone': false, 'cmid': -1};
+      if ('manual:undo' == element.attributes['data-toggletype']) {
+        data['isMarkDone'] = true;
+      }
+      data['cmid'] = element.attributes['data-cmid'];
+      data['title'] = element.attributes['data-activityname'];
+      buttonStates.add(data);
+    });
+
+    // if (kDebugMode) {
+    //   print(buttonStates);
+    // }
+    return <String, dynamic>{
+      'sesskey': sesskey,
+      'markButtons': buttonStates,
+    };
   }
 
   Future<bool> postVPL({
@@ -309,7 +423,7 @@ class BLCApi {
   }
 
   Future<void> saveThis() async {
-    if (_authToken.isSave) { 
+    if (_authToken.isSave) {
       if (_authToken.isAnyChange()) {
         await hiveSaveThis();
         _authToken.setAllCache();

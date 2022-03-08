@@ -1,6 +1,10 @@
 import 'package:diuspeeder/app/appbar_custom.dart';
+import 'package:diuspeeder/app/view/mark_as_done_page/cubit/markasdone_cubit.dart';
+import 'package:diuspeeder/core/auth_BLC/cubit/authblc_cubit.dart';
+import 'package:diuspeeder/core/auth_BLC/model/course_data.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:getwidget/getwidget.dart';
 
 class MarkAsDonePage extends StatelessWidget {
@@ -9,15 +13,25 @@ class MarkAsDonePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MarkAsDoneScreen();
+    return BlocProvider(
+      create: (context) => MarkasdoneCubit(
+        authblcCubit: BlocProvider.of<AuthblcCubit>(context),
+      ),
+      child: const MarkAsDoneScreen(),
+    );
   }
 }
 
-class MarkAsDoneScreen extends StatelessWidget {
+class MarkAsDoneScreen extends StatefulWidget {
   const MarkAsDoneScreen({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<MarkAsDoneScreen> createState() => _MarkAsDoneScreenState();
+}
+
+class _MarkAsDoneScreenState extends State<MarkAsDoneScreen> {
   Future<void> dialogHelpInfo({
     required BuildContext context,
     required String title,
@@ -50,6 +64,8 @@ class MarkAsDoneScreen extends StatelessWidget {
     );
   }
 
+  late String? value = null;
+  Map<String, dynamic>? data;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,52 +78,45 @@ class MarkAsDoneScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              DropdownButton(
-                icon: IconButton(
-                  icon: const Icon(Icons.info),
-                  onPressed: () {
-                    dialogHelpInfo(
-                      context: context,
-                      title: 'Select Semeter',
-                      helpImgPath: 'assets/vplcopypageid.gif',
-                    );
-                  },
-                ),
-                hint: const Text('Spring 2022'),
-                isExpanded: true,
-                items: <String>['One', 'Two', 'Free', 'Four']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
+              BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
+                builder: (context, state) {
+                  if (state is MarkasdoneGettingDataState) {
+                    return const Text('Getting enrolled course data');
+                  }
+                  return DropdownButton(
+                    icon: IconButton(
+                      icon: const Icon(Icons.cached_sharp),
+                      onPressed: () {
+                        BlocProvider.of<MarkasdoneCubit>(context)
+                            .refresh(value);
+                      },
+                    ),
+                    hint: const Text('Select Course'),
+                    isExpanded: true,
                     value: value,
-                    child: Text(value),
+                    items: BlocProvider.of<MarkasdoneCubit>(context)
+                        .course
+                        .map<DropdownMenuItem<String>>((CourseData value) {
+                      return DropdownMenuItem<String>(
+                        value: value.id.toString(),
+                        child: Text(
+                          value.fullname,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (v) {
+                      value = v.toString();
+                      setState(() {
+                        BlocProvider.of<MarkasdoneCubit>(context)
+                            .gettingDoneButtons(value.toString());
+                      });
+                    },
                   );
-                }).toList(),
-                onChanged: (v) => print,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              DropdownButton(
-                icon: IconButton(
-                  icon: const Icon(Icons.info),
-                  onPressed: () {
-                    dialogHelpInfo(
-                      context: context,
-                      title: 'Select Course',
-                      helpImgPath: 'assets/vplcopypageid.gif',
-                    );
-                  },
-                ),
-                hint: const Text('Course title'),
-                isExpanded: true,
-                items: <String>['One', 'Two', 'Free', 'Four']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (v) => print,
+                },
               ),
               const SizedBox(
                 height: 30,
@@ -139,41 +148,54 @@ class MarkAsDoneScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextButton.icon(
-                        style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all(
-                            Colors.greenAccent,
-                          ),
-                        ),
-                        onPressed: () {},
-                        icon: const Icon(Icons.check_circle),
-                        label: const Text(
-                          '1234 | W-2 Lab Practice (prob-1)Virtual programming lab',
-                          maxLines: 1,
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                      TextButton.icon(
-                        style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all(Colors.redAccent),
-                        ),
-                        onPressed: () {},
-                        icon: const Icon(Icons.cancel),
-                        label: const Text(
-                          '1234 | W-2 Lab Practice (prob-2) PC-BVirtual programming lab',
-                          maxLines: 1,
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
+                    builder: (context, state) {
+                      data =
+                          BlocProvider.of<MarkasdoneCubit>(context).markButtons;
+                      if (state is MarkasdoneGettingButtonsState) {
+                        return const Text('Getting cmid buttons.');
+                      }
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (data != null)
+                            ...data!['markButtons'].map(
+                              (Map<String, dynamic> e) => TextButton.icon(
+                                style: ButtonStyle(
+                                  foregroundColor: MaterialStateProperty.all(
+                                    (e['isMarkDone'] as bool)
+                                        ? Colors.greenAccent
+                                        : Colors.redAccent,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    BlocProvider.of<MarkasdoneCubit>(context)
+                                        .markAsDone(
+                                      data!['sesskey'].toString(),
+                                      e['cmid'].toString(),
+                                      value!,
+                                      !(e['isMarkDone'] as bool),
+                                    );
+                                    data;
+                                  });
+                                },
+                                icon: (e['isMarkDone'] as bool)
+                                    ? const Icon(Icons.check_circle)
+                                    : const Icon(Icons.cancel),
+                                label: Text(
+                                  '${e["cmid"]} | ${e["title"]}',
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
@@ -190,7 +212,9 @@ class MarkAsDoneScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            BlocProvider.of<MarkasdoneCubit>(context).markAll();
+          },
           child: const Text('Mark as Done'),
         ),
       ),

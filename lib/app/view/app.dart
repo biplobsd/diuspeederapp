@@ -22,7 +22,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        // darkTheme: AppTheme.darkTheme,
+        darkTheme: AppTheme.darkTheme,
         onGenerateRoute: Routes().onGenerateRoute,
         initialRoute: MenuesPage.pathName,
       ),

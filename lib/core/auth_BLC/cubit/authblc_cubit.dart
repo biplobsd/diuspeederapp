@@ -14,6 +14,8 @@ class AuthblcCubit extends Cubit<AuthblcState> {
   late final BLCApi _blClogin;
   late UserData userData;
 
+  BLCApi get blcApi => _blClogin;
+
   Future<void> isLogin() async {
     emit(AuthblcLoadingState());
     await _blClogin.hiveInitial();
@@ -54,31 +56,7 @@ class AuthblcCubit extends Cubit<AuthblcState> {
   }
 
   Future<bool> vplPosting(String pid, String filename, String data) async {
-    var checkMethodInt = 0;
-    var isLogin = true;
-    
-    while (!await _blClogin.isWebLoginSuccess()) {
-      if (checkMethodInt >= 2) {
-        isLogin = false;
-        break;
-      }
-      switch (checkMethodInt) {
-        case 0:
-          await _blClogin.apiAutoLogin();
-          checkMethodInt++;
-          break;
-        case 1:
-          await _blClogin.webLogin();
-          checkMethodInt++;
-          break;
-        default:
-          if (kDebugMode) {
-            print('Login failed');
-          }
-          emit(AuthblcErrorState());
-      }
-    }
-    if (isLogin) {
+    if (await _blClogin.webAccess()) {
       final result = await _blClogin.postVPL(
         pid: pid,
         filename: filename,
@@ -86,6 +64,7 @@ class AuthblcCubit extends Cubit<AuthblcState> {
       );
       return result;
     }
+    emit(AuthblcErrorState());
     return false;
   }
 

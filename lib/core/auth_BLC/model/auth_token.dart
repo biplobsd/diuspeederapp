@@ -5,7 +5,7 @@ part 'auth_token.g.dart';
 @HiveType(typeId: 1)
 class AuthToken {
   AuthToken({
-    required this.token,
+    required this.wstoken,
     required this.privateToken,
     required this.logintoken,
     required this.user,
@@ -15,7 +15,7 @@ class AuthToken {
   });
 
   @HiveField(0)
-  String token;
+  String wstoken;
   String cToken = '';
 
   @HiveField(1)
@@ -43,7 +43,7 @@ class AuthToken {
   bool cIsSave = false;
 
   bool isAnyChange() {
-    if (token != cToken) {
+    if (wstoken != cToken) {
       return true;
     } else if (privateToken != cPrivateToken) {
       return true;
@@ -62,7 +62,7 @@ class AuthToken {
   }
 
   void setAllCache() {
-    cToken = token;
+    cToken = wstoken;
     cPrivateToken = privateToken;
     cLogintoken = logintoken;
     cUser = user;
@@ -77,7 +77,7 @@ class AuthToken {
   }
 
   Map<String, dynamic> toList() => <String, dynamic>{
-        'token': token,
+        'token': wstoken,
         'privateToken': privateToken,
         'logintoken': logintoken.toString(),
         'user': user,
@@ -87,7 +87,7 @@ class AuthToken {
       };
 
   void clear(){
-    token = '';
+    wstoken = '';
     privateToken = '';
     logintoken = '';
     user = '';

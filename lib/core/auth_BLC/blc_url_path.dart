@@ -5,4 +5,7 @@ class BlcPath {
   static const String webserver = '/webservice/rest/server.php';
   static const String autoLogin = '/admin/tool/mobile/autologin.php';
   static const String vplPost = '/mod/vpl/forms/edit.json.php';
+  static const String coursePage = '/course/view.php';
+  static const String webServerAjax = '/lib/ajax/service.php';
+
 }
