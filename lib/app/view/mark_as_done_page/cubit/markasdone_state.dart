@@ -16,4 +16,3 @@ class MarkasdoneUnmarkState extends MarkasdoneState {}
 class MarkasdoneInitalState extends MarkasdoneState {}
 
 class MarkasdoneIdealState extends MarkasdoneState {}
-

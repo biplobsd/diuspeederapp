@@ -1,3 +1,4 @@
+import 'package:diuspeeder/app/view/course_enrolment/course_enrolment.dart';
 import 'package:diuspeeder/app/view/mark_as_done_page/mark_as_done_page.dart';
 import 'package:diuspeeder/app/view/menus_page/model/menu.dart';
 import 'package:diuspeeder/app/view/vpl_post_page/vpl_post_page.dart';
@@ -45,7 +46,7 @@ const List<Menu> menus = [
         Color.fromARGB(206, 252, 133, 174),
       ],
     ),
-    pageOpen: VPLPostPage.pathName,
+    pageOpen: CourseEnrolmentPage.pathName,
     isLoginRequired: true,
     icon: Icons.join_full_outlined,
     title: 'Course enrolment',

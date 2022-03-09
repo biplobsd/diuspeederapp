@@ -1,3 +1,4 @@
+import 'package:diuspeeder/app/view/course_enrolment/course_enrolment.dart';
 import 'package:diuspeeder/app/view/login_page/login_page.dart';
 import 'package:diuspeeder/app/view/mark_as_done_page/mark_as_done_page.dart';
 import 'package:diuspeeder/app/view/menus_page/menus_page.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 class Routes {
   Route? onGenerateRoute(RouteSettings settings) {
     final args = settings.arguments;
-
 
     switch (settings.name) {
       case MenuesPage.pathName:
@@ -26,7 +26,11 @@ class Routes {
         );
       case MarkAsDonePage.pathName:
         return MaterialPageRoute<MarkAsDonePage>(
-          builder: (context) => MarkAsDonePage(),
+          builder: (context) => const MarkAsDonePage(),
+        );
+      case CourseEnrolmentPage.pathName:
+        return MaterialPageRoute<CourseEnrolmentPage>(
+          builder: (context) => const CourseEnrolmentPage(),
         );
       default:
         return null;

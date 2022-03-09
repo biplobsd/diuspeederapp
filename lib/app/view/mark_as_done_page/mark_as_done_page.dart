@@ -40,64 +40,79 @@ class MarkAsDoneScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              BlocConsumer<MarkasdoneCubit, MarkasdoneState>(
-                listener: (context, state) {
-                  if (state is MarkasdoneIdealState) {
-                    var courseId = BlocProvider.of<MarkasdoneCubit>(context)
-                        .course[0]
-                        .id
-                        .toString();
-                    value = courseId;
-                    BlocProvider.of<MarkasdoneCubit>(context)
-                        .gettingDoneButtons(courseId);
-                  }
-                },
-                builder: (context, state) {
-                  return DropdownButton(
-                    icon: IconButton(
-                      icon: Lottie.asset(
-                        'assets/lotties/loadingGet.json',
-                        animate:
-                            state is MarkasdoneGettingDataState ? true : false,
-                      ),
-                      onPressed: () {
+              Container(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).hoverColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: BlocConsumer<MarkasdoneCubit, MarkasdoneState>(
+                    listener: (context, state) {
+                      if (state is MarkasdoneIdealState) {
+                        var courseId = BlocProvider.of<MarkasdoneCubit>(context)
+                            .course[0]
+                            .id
+                            .toString();
+                        value = courseId;
                         BlocProvider.of<MarkasdoneCubit>(context)
-                            .refresh(value);
-                      },
-                    ),
-                    hint: Text(
-                      state is MarkasdoneGettingDataState
-                          ? 'Fetching enroll courses...'
-                          : 'Select Course',
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                    isExpanded: true,
-                    value: value,
-                    items: state is MarkasdoneGettingDataState
-                        ? null
-                        : BlocProvider.of<MarkasdoneCubit>(context)
-                            .course
-                            .map<DropdownMenuItem<String>>((CourseData value) {
-                            return DropdownMenuItem<String>(
-                              value: value.id.toString(),
-                              child: Text(
-                                value.fullname,
-                                maxLines: 1,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption!
-                                    .copyWith(overflow: TextOverflow.ellipsis),
-                              ),
-                            );
-                          }).toList(),
-                    onChanged: (v) {
-                      value = v.toString();
-
-                      BlocProvider.of<MarkasdoneCubit>(context)
-                          .gettingDoneButtons(value.toString());
+                            .gettingDoneButtons(courseId);
+                      }
                     },
-                  );
-                },
+                    builder: (context, state) {
+                      return DropdownButton(
+                        icon: IconButton(
+                          icon: Lottie.asset(
+                            'assets/lotties/loadingGet.json',
+                            animate: state is MarkasdoneGettingDataState,
+                          ),
+                          onPressed: state is MarkasdoneLoadingState
+                              ? null
+                              : () {
+                                  BlocProvider.of<MarkasdoneCubit>(context)
+                                      .refresh(value);
+                                },
+                        ),
+                        hint: Text(
+                          state is MarkasdoneGettingDataState
+                              ? 'Fetching recent courses...'
+                              : 'Select Course',
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                        isExpanded: true,
+                        value: value,
+                        items: state is MarkasdoneGettingDataState
+                            ? null
+                            : BlocProvider.of<MarkasdoneCubit>(context)
+                                .course
+                                .map<DropdownMenuItem<String>>(
+                                    (CourseData value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.id.toString(),
+                                  child: Text(
+                                    value.fullname,
+                                    maxLines: 1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                  ),
+                                );
+                              }).toList(),
+                        onChanged: state is MarkasdoneLoadingState
+                            ? null
+                            : (v) {
+                                value = v.toString();
+
+                                BlocProvider.of<MarkasdoneCubit>(context)
+                                    .gettingDoneButtons(value.toString());
+                              },
+                      );
+                    },
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 30,
@@ -106,8 +121,7 @@ class MarkAsDoneScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
                   builder: (context, state) {
-                    if (
-                        state is MarkasdoneLoadingState ||
+                    if (state is MarkasdoneLoadingState ||
                         state is MarkasdoneMarkState ||
                         state is MarkasdoneUnmarkState) {
                       var perc = BlocProvider.of<MarkasdoneCubit>(context)
@@ -123,11 +137,15 @@ class MarkAsDoneScreen extends StatelessWidget {
                         percentage: perc,
                         backgroundColor: Colors.black26,
                         progressBarColor: GFColors.INFO,
-                        child: Text(
-                          '${(perc * 100).toStringAsFixed(0)}%',
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(
-                              fontSize: 13, color: Colors.white54),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '${(perc * 100).toStringAsFixed(0)}%',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.white54,
+                            ),
+                          ),
                         ),
                       );
                     }
@@ -148,55 +166,57 @@ class MarkAsDoneScreen extends StatelessWidget {
                   color: Theme.of(context).hoverColor,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: SingleChildScrollView(
-                  child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
-                    builder: (context, state) {
-                      data =
-                          BlocProvider.of<MarkasdoneCubit>(context).markButtons;
-                      if (state is MarkasdoneGettingButtonsState) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (data != null)
-                            ...data!['markButtons'].map(
-                              (Map<String, dynamic> e) => TextButton.icon(
-                                style: ButtonStyle(
-                                  foregroundColor: MaterialStateProperty.all(
-                                    (e['isMarkDone'] as bool)
-                                        ? Colors.lightBlue
-                                        : Colors.red,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  BlocProvider.of<MarkasdoneCubit>(context)
-                                      .markAsDone(
-                                    data!['sesskey'].toString(),
-                                    e['cmid'].toString(),
-                                    value!,
-                                    !(e['isMarkDone'] as bool),
-                                  );
-                                },
-                                icon: (e['isSending'] as bool)
-                                    ? const Icon(Icons.cached_sharp)
-                                    : (e['isMarkDone'] as bool)
-                                        ? const Icon(Icons.check_circle)
-                                        : const Icon(Icons.cancel),
-                                label: Text(
-                                  '${e["cmid"]} | ${e["title"]}',
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
+                alignment: Alignment.topRight,
+                child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
+                  builder: (context, state) {
+                    if (state is MarkasdoneGettingButtonsState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    data =
+                        BlocProvider.of<MarkasdoneCubit>(context).markButtons;
+                    if (data == null) {
+                      return Container();
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data!['markButtons'].length as int,
+                      itemBuilder: (BuildContext ctx, int index) {
+                        final e =
+                            data!['markButtons'][index] as Map<String, dynamic>;
+                        return TextButton.icon(
+                          style: ButtonStyle(
+                            alignment: Alignment.centerLeft,
+                            foregroundColor: MaterialStateProperty.all(
+                              (e['isMarkDone'] as bool)
+                                  ? Colors.lightBlue
+                                  : Colors.red,
                             ),
-                        ],
-                      );
-                    },
-                  ),
+                          ),
+                          onPressed: () {
+                            BlocProvider.of<MarkasdoneCubit>(context)
+                                .markAsDone(
+                              data!['sesskey'].toString(),
+                              e['cmid'].toString(),
+                              value!,
+                              !(e['isMarkDone'] as bool),
+                            );
+                          },
+                          icon: (e['isSending'] as bool)
+                              ? const Icon(Icons.cached_sharp)
+                              : (e['isMarkDone'] as bool)
+                                  ? const Icon(Icons.check_circle)
+                                  : const Icon(Icons.cancel),
+                          label: Text(
+                            '${e["cmid"]} | ${e["title"]}',
+                            maxLines: 1,
+                            style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],
