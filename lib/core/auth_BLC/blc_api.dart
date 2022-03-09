@@ -338,12 +338,6 @@ class BLCApi {
     );
     final sesskey = getSesskey(responsed.data.toString());
 
-    // if (kDebugMode) {
-    //   print('sskey $sesskey');
-    // }
-    // if (kDebugMode) {
-    //   print(responsed.data.toString());
-    // }
 
     final buttonStates = <Map<String, dynamic>>[];
 
@@ -366,9 +360,6 @@ class BLCApi {
       buttonStates.add(data);
     });
 
-    // if (kDebugMode) {
-    //   print(buttonStates);
-    // }
     return <String, dynamic>{
       'sesskey': sesskey,
       'markButtons': buttonStates,

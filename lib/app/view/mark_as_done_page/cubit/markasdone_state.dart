@@ -4,10 +4,16 @@ part of 'markasdone_cubit.dart';
 abstract class MarkasdoneState {}
 
 class MarkasdoneGettingDataState extends MarkasdoneState {}
-class MarkasdoneGettingButtonsState extends MarkasdoneState {}
-class MarkasdoneLoadingState extends MarkasdoneState {}
-class MarkasdoneInitalState extends MarkasdoneState {}
-class MarkasdoneIdealState extends MarkasdoneState {}
-class MarkasdoneSelectedState extends MarkasdoneState {}
 
+class MarkasdoneGettingButtonsState extends MarkasdoneState {}
+
+class MarkasdoneLoadingState extends MarkasdoneState {}
+
+class MarkasdoneMarkState extends MarkasdoneState {}
+
+class MarkasdoneUnmarkState extends MarkasdoneState {}
+
+class MarkasdoneInitalState extends MarkasdoneState {}
+
+class MarkasdoneIdealState extends MarkasdoneState {}
 

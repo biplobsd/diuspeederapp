@@ -69,6 +69,7 @@ class MarkAsDoneScreen extends StatelessWidget {
                       state is MarkasdoneGettingDataState
                           ? 'Fetching enroll courses...'
                           : 'Select Course',
+                      style: Theme.of(context).textTheme.caption,
                     ),
                     isExpanded: true,
                     value: value,
@@ -105,7 +106,10 @@ class MarkAsDoneScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
                   builder: (context, state) {
-                    if (state is MarkasdoneSelectedState) {
+                    if (
+                        state is MarkasdoneLoadingState ||
+                        state is MarkasdoneMarkState ||
+                        state is MarkasdoneUnmarkState) {
                       var perc = BlocProvider.of<MarkasdoneCubit>(context)
                           .getProgressBarValue();
                       if (perc.isNaN) {
@@ -201,17 +205,32 @@ class MarkAsDoneScreen extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: const Size(double.infinity, 40),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-          onPressed: () {
-            BlocProvider.of<MarkasdoneCubit>(context).markAll();
+        child: BlocBuilder<MarkasdoneCubit, MarkasdoneState>(
+          builder: (context, state) {
+            var buttonText = 'Mark as Done';
+            if (state is MarkasdoneLoadingState) {
+              buttonText = 'Touching...';
+            } else if (state is MarkasdoneMarkState) {
+              buttonText = 'Unmark';
+            }
+
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(double.infinity, 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: state is MarkasdoneLoadingState
+                  ? null
+                  : () {
+                      BlocProvider.of<MarkasdoneCubit>(context).markAll();
+                    },
+              child: Text(
+                buttonText,
+              ),
+            );
           },
-          child: const Text('Mark as Done'),
         ),
       ),
     );
