@@ -46,17 +46,18 @@ dependencies:
   cupertino_icons: ^1.0.2
   url_launcher: ^6.0.20
   getwidget: ^2.0.5
+  
 
   
 
 dev_dependencies:
+  bloc_test: ^9.0.3
   flutter_test:
     sdk: flutter
   hive_generator: ^1.1.2 
   mocktail: ^0.2.0
   very_good_analysis: ^2.4.0
   build_runner: ^2.1.7
-  bloc_test: ^9.0.2
   flutter_app_name: ^0.1.0
   flutter_launcher_icons_maker: ^0.10.2
   flutter_native_splash: ^2.0.5

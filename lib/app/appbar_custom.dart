@@ -42,7 +42,7 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 8),
+                          horizontal: 20, vertical: 8,),
                       child: Row(
                         children: [
                           PopupMenuButton<String>(
@@ -58,7 +58,7 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
                                     child: Image.network(
                                       userPicUrl,
                                       errorBuilder: (context, error,
-                                              stackTrace) =>
+                                              stackTrace,) =>
                                           const Text('Unable to load image'),
                                     ),
                                   ),

@@ -241,7 +241,9 @@ class MarkAsDoneScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
-              onPressed: state is MarkasdoneLoadingState
+              onPressed: state is MarkasdoneLoadingState ||
+                      state is MarkasdoneGettingDataState ||
+                      state is MarkasdoneGettingButtonsState
                   ? null
                   : () {
                       BlocProvider.of<MarkasdoneCubit>(context).markAll();
