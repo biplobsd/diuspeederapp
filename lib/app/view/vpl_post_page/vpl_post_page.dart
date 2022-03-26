@@ -143,15 +143,22 @@ class VPLPostScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              TextButton.icon(
-                onPressed: () {
-                  selectFile(context);
-                },
-                icon: const Icon(Icons.attach_file),
-                label: const Text('Choose a file'),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  color: Theme.of(context).cardColor,
+                ),
+                child: TextButton.icon(
+                  onPressed: () {
+                    selectFile(context);
+                  },
+                  icon: const Icon(Icons.attach_file),
+                  label: const Text('Choose a file'),
+                ),
               ),
               const SizedBox(
-                height: 5,
+                height: 10,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * .5,
@@ -168,6 +175,12 @@ class VPLPostScreen extends StatelessWidget {
                         errorText: state is VplpostCodeFieldEmptyState
                             ? 'Code field is emtpy'
                             : null,
+                        contentPadding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                          top: 45,
+                        ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         filled: true,
                         border: OutlineInputBorder(
@@ -175,9 +188,12 @@ class VPLPostScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         labelStyle: const TextStyle(
-                          height: 3.5,
+                          height: 2,
                         ),
-                        label: const Text('Input your text/code'),
+                        label: Container(
+                          margin: const EdgeInsets.only(top: 30),
+                          child: const Text('Input your text/code'),
+                        ),
                       ),
                     );
                   },
