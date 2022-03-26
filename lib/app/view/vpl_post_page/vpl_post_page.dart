@@ -144,7 +144,7 @@ class VPLPostScreen extends StatelessWidget {
                 height: 10,
               ),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                // padding: const EdgeInsets.symmetric(vertical: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(2),
                   color: Theme.of(context).cardColor,
@@ -179,7 +179,7 @@ class VPLPostScreen extends StatelessWidget {
                           left: 10,
                           right: 10,
                           bottom: 10,
-                          top: 45,
+                          top: 30,
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         filled: true,
