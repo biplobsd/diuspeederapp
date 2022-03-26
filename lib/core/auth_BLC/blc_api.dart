@@ -338,7 +338,6 @@ class BLCApi {
     );
     final sesskey = getSesskey(responsed.data.toString());
 
-
     final buttonStates = <Map<String, dynamic>>[];
 
     XPath.html(responsed.data.toString())
@@ -382,7 +381,7 @@ class BLCApi {
         'action': 'load',
       },
     );
-    final versionNumber = getInfoResponse.data['response']['version'] as String;
+    final dynamic versionNumber = getInfoResponse.data['response']['version'];
     final postResponsed = await _client.post<dynamic>(
       BlcPath.vplPost,
       queryParameters: <String, String>{
