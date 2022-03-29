@@ -51,7 +51,7 @@ const List<Menu> menus = [
     icon: Icons.join_full_outlined,
     title: 'Course enrolment',
     titleIconColor: Colors.white,
-    isComingSoon: false,
+    isComingSoon: true,
   ),
   Menu(
     image: AssetImage('assets/sgpaBar.png'),

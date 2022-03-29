@@ -13,12 +13,27 @@ class CourseEnrolmentPage extends StatelessWidget {
   }
 }
 
-class CourseEnrolmentScreen extends StatelessWidget {
+class CourseEnrolmentScreen extends StatefulWidget {
   CourseEnrolmentScreen({
     Key? key,
   }) : super(key: key);
 
-  List<Course>? listCourses;
+  @override
+  State<CourseEnrolmentScreen> createState() => _CourseEnrolmentScreenState();
+}
+
+class _CourseEnrolmentScreenState extends State<CourseEnrolmentScreen> {
+  List<Course> listCourses = [
+    Course(
+      title: 'Algorithms[PC-A+PC-B][Spring-22]',
+      id: 14226,
+      enrollmentKey: 'CSE1234',
+    )
+  ];
+
+  TextEditingController urlController = TextEditingController();
+
+  TextEditingController enrollkeyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,57 +46,73 @@ class CourseEnrolmentScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (listCourses != null)
-              ...listCourses!.map(
-                (e) => ListTile(
-                  leading: IconButton(
-                    icon: const Icon(Icons.tiktok),
-                    onPressed: () {},
-                  ),
-                  title: Text(e.title),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {},
-                  ),
+            ...listCourses.map(
+              (e) => ListTile(
+                leading: IconButton(
+                  icon: const Icon(Icons.tiktok),
+                  onPressed: () {},
+                ),
+                title: Text(e.title),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    setState(() {
+                      listCourses.removeWhere((element) => element.id == e.id);
+                    });
+                  },
                 ),
               ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: ElevatedButton(
                 onPressed: () {
                   showDialog<dynamic>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                            title: const Text('Add your course'),
-                            content: Container(
-                              height: 150,
-                              child: Column(
-                                children: const [
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      label: Text('URL'),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      label: Text('Enroll key'),
-                                    ),
-                                  ),
-                                ],
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Add your course'),
+                      content: Container(
+                        height: 150,
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: urlController,
+                              decoration: const InputDecoration(
+                                label: Text('URL'),
                               ),
                             ),
-                            actions: [
-                              TextButton(
-                                child: const Text('Add'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              )
-                            ],
-                          ));
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                              controller: enrollkeyController,
+                              decoration: const InputDecoration(
+                                label: Text('Enroll key'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text('Add'),
+                          onPressed: () {
+                            setState(() {
+                              listCourses.add(
+                                Course(
+                                  id: 111,
+                                  title: urlController.text,
+                                  enrollmentKey: enrollkeyController.text,
+                                ),
+                              );
+                            });
+
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                    ),
+                  );
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.black12),

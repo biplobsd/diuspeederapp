@@ -14,99 +14,22 @@ class MenuesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MenueScreen();
+  }
+}
+
+class MenueScreen extends StatelessWidget {
+  const MenueScreen({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MyAppbar(
         title: Text('DIUSpeeder'),
       ),
-      body: ListView.builder(
-        itemCount: menus.length,
-        padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-        itemBuilder: (ctx, index) => Stack(
-          children: [
-            Container(
-              height: 140,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.blueGrey.withOpacity(0.1),
-                    BlendMode.dstATop,
-                  ),
-                  image: menus[index].image,
-                ),
-                borderRadius: BorderRadius.circular(15),
-                gradient: menus[index].gradient,
-              ),
-              margin: const EdgeInsets.only(bottom: 15),
-              child: InkWell(
-                onTap: () {
-                  if (!menus[index].isComingSoon) {
-                    if (menus[index].isLoginRequired) {
-                      if (BlocProvider.of<AuthblcCubit>(context).state
-                          is AuthblcLoginState) {
-                        Navigator.of(context).pushNamed(menus[index].pageOpen);
-                      } else {
-                        Navigator.of(context).pushNamed(
-                          LoginPage.pathName,
-                          arguments: menus[index].pageOpen,
-                        );
-                      }
-                    } else {
-                      Navigator.of(context).pushNamed(menus[index].pageOpen);
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'This option is coming soon 🥺. Stay with us. ',
-                        ),
-                      ),
-                    );
-                  }
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      menus[index].icon,
-                      size: 50,
-                      color: menus[index].titleIconColor,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      menus[index].title,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: menus[index].titleIconColor.withOpacity(0.8),
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if (menus[index].isComingSoon)
-              Container(
-                height: 140,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.black38,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Center(
-                  child: FittedBox(
-                    child: Text(
-                      'Coming soon',
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
+      body: const MenuItemWidgets(),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border.all(width: 0.7, color: Colors.white10),
@@ -153,6 +76,105 @@ class MenuesPage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MenuItemWidgets extends StatelessWidget {
+  const MenuItemWidgets({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: menus.length,
+      padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+      itemBuilder: (ctx, index) => Stack(
+        children: [
+          Container(
+            height: 140,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.blueGrey.withOpacity(0.1),
+                  BlendMode.dstATop,
+                ),
+                image: menus[index].image,
+              ),
+              borderRadius: BorderRadius.circular(15),
+              gradient: menus[index].gradient,
+            ),
+            margin: const EdgeInsets.only(bottom: 15),
+            child: InkWell(
+              onTap: () {
+                if (!menus[index].isComingSoon) {
+                  if (menus[index].isLoginRequired) {
+                    if (BlocProvider.of<AuthblcCubit>(context).state
+                        is AuthblcLoginState) {
+                      Navigator.of(context).pushNamed(menus[index].pageOpen);
+                    } else {
+                      Navigator.of(context).pushNamed(
+                        LoginPage.pathName,
+                        arguments: menus[index].pageOpen,
+                      );
+                    }
+                  } else {
+                    Navigator.of(context).pushNamed(menus[index].pageOpen);
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'This option is coming soon 🥺. Stay with us. ',
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    menus[index].icon,
+                    size: 50,
+                    color: menus[index].titleIconColor,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    menus[index].title,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: menus[index].titleIconColor.withOpacity(0.8),
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (menus[index].isComingSoon)
+            Container(
+              height: 140,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black38,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Center(
+                child: FittedBox(
+                  child: Text(
+                    'Coming soon',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
