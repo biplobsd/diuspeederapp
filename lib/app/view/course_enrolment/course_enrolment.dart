@@ -9,12 +9,12 @@ class CourseEnrolmentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CourseEnrolmentScreen();
+    return const CourseEnrolmentScreen();
   }
 }
 
 class CourseEnrolmentScreen extends StatefulWidget {
-  CourseEnrolmentScreen({
+  const CourseEnrolmentScreen({
     Key? key,
   }) : super(key: key);
 
@@ -28,12 +28,23 @@ class _CourseEnrolmentScreenState extends State<CourseEnrolmentScreen> {
       title: 'Algorithms[PC-A+PC-B][Spring-22]',
       id: 14226,
       enrollmentKey: 'CSE1234',
+      state: 2,
     )
   ];
 
   TextEditingController urlController = TextEditingController();
 
   TextEditingController enrollkeyController = TextEditingController();
+
+  Widget stateInfoCourse(int state) {
+    if (state == 1) {
+      return const Icon(Icons.check_circle);
+    } else if (state == 0) {
+      return const Icon(Icons.cancel);
+    } else {
+      return const Icon(Icons.cached_sharp);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +60,7 @@ class _CourseEnrolmentScreenState extends State<CourseEnrolmentScreen> {
             ...listCourses.map(
               (e) => ListTile(
                 leading: IconButton(
-                  icon: const Icon(Icons.tiktok),
+                  icon: stateInfoCourse(e.state),
                   onPressed: () {},
                 ),
                 title: Text(e.title),
@@ -103,6 +114,7 @@ class _CourseEnrolmentScreenState extends State<CourseEnrolmentScreen> {
                                   id: 111,
                                   title: urlController.text,
                                   enrollmentKey: enrollkeyController.text,
+                                  state: 2,
                                 ),
                               );
                             });
