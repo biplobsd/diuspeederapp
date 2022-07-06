@@ -18,18 +18,18 @@ class MarkAsDonePage extends StatelessWidget {
       create: (context) => MarkasdoneCubit(
         authblcCubit: BlocProvider.of<AuthblcCubit>(context),
       ),
-      child: MarkAsDoneScreen(),
+      child: const MarkAsDoneScreen(),
     );
   }
 }
 
 class MarkAsDoneScreen extends StatelessWidget {
-  MarkAsDoneScreen({Key? key}) : super(key: key);
+  const MarkAsDoneScreen({Key? key}) : super(key: key);
 
-  late String? value = null;
-  Map<String, dynamic>? data;
   @override
   Widget build(BuildContext context) {
+    String? value;
+    Map<String, dynamic>? data;
     return Scaffold(
       appBar: const MyAppbar(
         title: Text('Mark as done'),

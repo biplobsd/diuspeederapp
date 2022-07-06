@@ -14,7 +14,7 @@ class MenuesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenueScreen();
+    return const MenueScreen();
   }
 }
 
