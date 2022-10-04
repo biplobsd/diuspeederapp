@@ -82,7 +82,7 @@ class _CourseEnrolmentScreenState extends State<CourseEnrolmentScreen> {
                     context: context,
                     builder: (ctx) => AlertDialog(
                       title: const Text('Add your course'),
-                      content: Container(
+                      content: SizedBox(
                         height: 150,
                         child: Column(
                           children: [
